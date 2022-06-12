@@ -74,8 +74,8 @@ function App() {
     setLoading(true);
     setImageStyle({ display: "none" });
     setMessage(getMessage());
-    //fetch("https://gifrandom.herokuapp.com/api/v1/gif")
-    fetch("http://localhost:5000/api/v1/gif")
+    
+    fetch("https://gifrandom.herokuapp.com/api/v1/gif")
       .then((response) => response.json())
       .then((json) => {
         setGif(json.gif.url);
