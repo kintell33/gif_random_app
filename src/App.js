@@ -49,7 +49,7 @@ function App() {
   };
 
   const handleClick = () => {
-    fetch("http://localhost:5000/api/v1/gif")
+    fetch("https://gifrandom.herokuapp.com/api/v1/gif")
       .then((response) => response.json())
       .then((json) => {
         console.log(json.gif.url);
