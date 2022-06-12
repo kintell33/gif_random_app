@@ -5,6 +5,7 @@ import {
   extendTheme,
   colors,
   Image,
+  Spinner,
 } from "@vechaiui/react";
 import { useState } from "react";
 
@@ -25,15 +26,36 @@ const cool = {
   },
 };
 
+export const pale = {
+  id: "pale",
+  type: "dark",
+  colors: {
+    bg: {
+      base: colors.blueGray["800"],
+      fill: colors.blueGray["900"],
+    },
+    text: {
+      foreground: colors.blueGray["100"],
+      muted: colors.blueGray["300"],
+    },
+    primary: colors.violet,
+    neutral: colors.blueGray,
+  },
+};
+
 const theme = extendTheme({
   cursor: "pointer",
   colorSchemes: {
     cool,
+    pale
   },
 });
 
 function App() {
   const [gif, setGif] = useState(null);
+  const [message, setMessage] = useState("");
+  const [imageStyle, setImageStyle] = useState({ display: "none" });
+  const [loading, setLoading] = useState(false);
 
   const vh =
     Math.max(
@@ -49,16 +71,47 @@ function App() {
   };
 
   const handleClick = () => {
-    fetch("https://gifrandom.herokuapp.com/api/v1/gif")
+    setLoading(true);
+    setImageStyle({ display: "none" });
+    setMessage(getMessage());
+    //fetch("https://gifrandom.herokuapp.com/api/v1/gif")
+    fetch("http://localhost:5000/api/v1/gif")
       .then((response) => response.json())
       .then((json) => {
-        console.log(json.gif.url);
         setGif(json.gif.url);
       });
   };
 
+  var messages = [
+    "Mañana te vas a sentir asi",
+    "Este año te depara lo siguiente",
+    "Tu suerte estos dias va a ser asi",
+    "El amor en tu vida es asi",
+    "Tus amigos creen que sos asi",
+    "Tus estudios van a ser asi",
+    "Asi sos en la noche",
+    "Asi sos en el dia",
+    "Como sos con la comida",
+    "Como te sentis con la gente",
+  ];
+
+  const getMessage = () => {
+    var newMessage = messages[Math.floor(Math.random() * messages.length)];
+    return newMessage;
+  };
+
+  const handleImageLoaded = () => {
+    setImageStyle({ display: "block" });
+    setLoading(false);
+  };
+
+  const handleImageErrored = () => {
+    setImageStyle({ display: "none" });
+    setLoading(false);
+  };
+
   return (
-    <VechaiProvider theme={theme} colorScheme="cool">
+    <VechaiProvider theme={theme} colorScheme="pale">
       <div
         style={{
           display: "flex",
@@ -74,18 +127,29 @@ function App() {
             handleClick();
           }}
         >
-          Get random gif
+          Ver mi suerte
         </Button>
         {gif ? (
-          <>
+          <div>
+            <p className="flex justify-center align-center"  style={{marginBottom:'30px', fontSize: '2rem', textAlign: 'center'}}>{message}</p>
             <Image
+              style={imageStyle}
               alt="image"
-              htmlWidth={300}
-              htmlHeight={300}
+              htmlWidth={400}
+              htmlHeight={400}
               className="object-cover"
               src={gif}
+              onLoad={() => {
+                handleImageLoaded();
+              }}
+              onError={() => {
+                handleImageErrored();
+              }}
             />
-          </>
+            <div className="flex justify-center align-center" style={{marginTop:'30px'}}>
+              {!loading || <Spinner className="text-primary-500" />}
+            </div>
+          </div>
         ) : (
           ""
         )}
