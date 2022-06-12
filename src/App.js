@@ -34,7 +34,6 @@ const theme = extendTheme({
 
 function App() {
   const [gif, setGif] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   const vh =
     Math.max(
